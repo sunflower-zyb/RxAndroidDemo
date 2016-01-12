@@ -1,20 +1,16 @@
 package com.sunflower.rxandroiddemo.utils;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.sunflower.rxandroiddemo.dto.JsonResponse;
+import android.util.Log;
+
 import com.sunflower.rxandroiddemo.api.APIService;
 import com.sunflower.rxandroiddemo.dto.Response;
 
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import okhttp3.OkHttpClient;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Sunflower on 2015/11/4.
@@ -23,36 +19,37 @@ public class RetrofitUtil {
 
     private static final String API_HOST = "http://203.195.168.151:8888/sunray/";
 
-    private static APIService service;
-    private static Retrofit retrofit;
-    private static OkHttpClient client;
 
-    public static APIService getService() {
+    private APIService service;
+    private Retrofit retrofit;
+
+    public APIService getService() {
         if (service == null) {
             service = getRetrofit().create(APIService.class);
         }
         return service;
     }
 
-    static {
-        client = new OkHttpClient();
-        client.setConnectTimeout(10, TimeUnit.SECONDS);
-
-//        // print Log
-//        client.interceptors().add(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-//            @Override
-//            public void log(String message) {
-//                if (message.startsWith("{")) {
-//                    Logger.json(message);
-//                } else {
-//                    Logger.i("Api", message);
-//                }
-//            }
-//        }));
-    }
-
-    private static Retrofit getRetrofit() {
+    private Retrofit getRetrofit() {
         if (retrofit == null) {
+
+//            OkHttpClient client = new OkHttpClient();
+// set time out interval
+//            client.setReadTimeout(10, TimeUnit.MINUTES);
+//            client.setConnectTimeout(10, TimeUnit.MINUTES);
+//            client.setWriteTimeout(10, TimeUnit.MINUTES);
+
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    Log.i("RxJava", "LoggingInterceptor---" + message);
+                }
+            });
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .build();
             retrofit = new Retrofit.Builder()
                     .client(client)
                     .baseUrl(API_HOST)

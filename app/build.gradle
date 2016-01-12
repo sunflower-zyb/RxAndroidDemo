@@ -22,12 +22,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
    // https://github.com/square/retrofit
-    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
-    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    //filter request and response log with okHttpClient
+    //自己重写了log拦截器
 //    compile 'com.squareup.okhttp:logging-interceptor:2.7.0'
     //https://github.com/JakeWharton/butterknife
     compile 'com.jakewharton:butterknife:6.1.0'
