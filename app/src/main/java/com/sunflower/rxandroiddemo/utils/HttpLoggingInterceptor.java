@@ -89,7 +89,6 @@ public class HttpLoggingInterceptor implements Interceptor {
             @Override
             public void log(String message) {
                 Platform.get().log(message);
-//                Platform.get().logW(message);
             }
         };
     }
@@ -113,10 +112,6 @@ public class HttpLoggingInterceptor implements Interceptor {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
         return this;
-    }
-
-    public Level getLevel() {
-        return level;
     }
 
     @Override

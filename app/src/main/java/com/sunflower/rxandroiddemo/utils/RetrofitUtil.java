@@ -45,7 +45,6 @@ public class RetrofitUtil {
                     Log.i("RxJava", "LoggingInterceptor---" + message);
                 }
             });
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
