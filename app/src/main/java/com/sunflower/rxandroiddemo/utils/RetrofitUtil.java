@@ -11,14 +11,18 @@ import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Sunflower on 2015/11/4.
  */
 public class RetrofitUtil {
 
-    private static final String API_HOST = "http://203.195.168.151:8888/sunray/";
-
+    /**
+     * 服务器地址
+     */
+    private final String API_HOST = APIHost.API_HOST;
 
     private APIService service;
     private Retrofit retrofit;
@@ -59,7 +63,14 @@ public class RetrofitUtil {
         return retrofit;
     }
 
-    public static <T> Observable<T> flatResponse(final Response<T> response) {
+    /**
+     * 对网络接口返回的Response进行分割操作
+     *
+     * @param response
+     * @param <T>
+     * @return
+     */
+    public <T> Observable<T> flatResponse(final Response<T> response) {
         return Observable.create(new Observable.OnSubscribe<T>() {
 
             @Override
@@ -75,6 +86,23 @@ public class RetrofitUtil {
                 subscriber.onCompleted();
             }
         });
+    }
+
+    /**
+     * http://www.jianshu.com/p/e9e03194199e
+     * 木有十分懂，，
+     *
+     * @param <T>
+     * @return
+     */
+    protected <T> Observable.Transformer<T, T> applySchedulers() {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 
 

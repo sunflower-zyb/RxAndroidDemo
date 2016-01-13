@@ -1,18 +1,14 @@
 package com.sunflower.rxandroiddemo;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sunflower.rxandroiddemo.api.ApiWrapper;
-import com.sunflower.rxandroiddemo.api.APIService;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
-import com.sunflower.rxandroiddemo.dto.BindAreaAndHospitalInfo;
-import com.sunflower.rxandroiddemo.dto.JsonResponse;
-import com.sunflower.rxandroiddemo.utils.RetrofitUtil;
+import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
+import com.sunflower.rxandroiddemo.dto.VersionDto;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -21,12 +17,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -37,7 +31,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
     }
-
 
     @OnClick(R.id.get_sms_btn)
     void getSms() {
@@ -54,7 +47,7 @@ public class MainActivity extends BaseActivity {
                             return false;
                     }
                 })
-                .subscribe(subscribe(new Action1<String>() {
+                .subscribe(newSubscriber(new Action1<String>() {
                     @Override
                     public void call(String s) {
                         Log.i(TAG, "call " + s);
@@ -64,26 +57,24 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    /**
+     * 分类id
+     */
+    long categoryId;
+
     @OnClick(R.id.get_article_btn)
     void getArticleList() {
-        ApiWrapper wrapper = new ApiWrapper();
+        final ApiWrapper wrapper = new ApiWrapper();
         wrapper.getArticleCategory()
                 .doOnNext(new Action1<List<ArticleCategory>>() {
                     @Override
                     public void call(List<ArticleCategory> articleCategories) {
-
-                    }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e(TAG, "doOnError " + throwable.toString());
+                        categoryId = articleCategories.get(0).getId();
                     }
                 })
                 .retry(new Func2<Integer, Throwable, Boolean>() {
                     @Override
                     public Boolean call(Integer integer, Throwable throwable) {
-//                        Log.e(TAG, "call " + integer + "," + throwable.toString());
                         Log.e(TAG, "call " + integer);
                         if (throwable instanceof SocketTimeoutException && integer < 2)
                             return true;
@@ -91,16 +82,45 @@ public class MainActivity extends BaseActivity {
                             return false;
                     }
                 })
-                .subscribe(subscribe(new Action1<List<ArticleCategory>>() {
+                .flatMap(new Func1<List<ArticleCategory>, Observable<List<ArticleListDTO>>>() {
                     @Override
-                    public void call(List<ArticleCategory> articleCategories) {
-                        for (ArticleCategory category : articleCategories) {
-                            Log.i(TAG, "call " + category.getId() + "," + category.getName());
+                    public Observable<List<ArticleListDTO>> call(List<ArticleCategory> articleCategories) {
+
+                        return wrapper.getArticleList(categoryId, 1);
+                    }
+                })
+                .subscribe(newSubscriber(new Action1<List<ArticleListDTO>>() {
+                    @Override
+                    public void call(List<ArticleListDTO> articleList) {
+                        for (ArticleListDTO article : articleList) {
+                            Log.i(TAG, article.getId() + " " + article.getTitle() + " " + article.getIntro());
                         }
                     }
                 }));
+        ;
     }
 
+
+    @OnClick(R.id.get_home_btn)
+    void getHome() {
+        ApiWrapper wrapper = new ApiWrapper();
+        Subscription s1 = wrapper
+                .checkVersion()
+                .subscribe(newSubscriber(new Action1<VersionDto>() {
+                    @Override
+                    public void call(VersionDto dto) {
+                        Log.i(TAG, "checkVersion--" + dto.toString());
+                    }
+                }));
+        mCompositeSubscription.add(s1);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mCompositeSubscription.unsubscribe();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

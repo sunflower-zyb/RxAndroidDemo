@@ -1,8 +1,11 @@
 package com.sunflower.rxandroiddemo.api;
 
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
+import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
+import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
+import com.sunflower.rxandroiddemo.dto.PersonalInfo;
 import com.sunflower.rxandroiddemo.dto.Response;
-import com.sunflower.rxandroiddemo.dto.SunrayResponse;
+import com.sunflower.rxandroiddemo.dto.VersionDto;
 
 import java.util.List;
 
@@ -29,16 +32,6 @@ public interface APIService {
     @POST("api/gravida/product/findByArea.json")
     Observable<Response> loadProductByArea(@Field("id") String id);
 
-    /**
-     * 获取pdf地址
-     *
-     * @param userid
-     * @param documentid
-     */
-    @FormUrlEncoded
-    @POST("document/getdocument")
-    Observable<SunrayResponse> downloadPDF(@Field("userid") String userid, @Field("documentid") String documentid);
-
     @FormUrlEncoded
     @POST("api/common/msg.json")
     Observable<Response> getSms(@Field("mobile") String mobile, @Field("appType") String appType);
@@ -51,5 +44,46 @@ public interface APIService {
     @POST("api/gravida/article/categories.json")
     Observable<Response<List<ArticleCategory>>> getArticleCategory();
 
+    /**
+     * 根据分类获取帖子列表
+     *
+     * @param id         分类id
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/gravida/article/list.json")
+    Observable<Response<List<ArticleListDTO>>> getArticleList(@Field("id") long id,
+                                                              @Field("pageNumber") int pageNumber,
+                                                              @Field("pageSize") int pageSize);
+
+    /**
+     * 检查版本
+     *
+     * @param version
+     * @param type
+     * @param device
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/common/version.json")
+    Observable<Response<VersionDto>> checkVersion(@Field("version") String version,
+                                                  @Field("type") String type,
+                                                  @Field("device") String device);
+
+    /**
+     * 获取个人信息
+     *
+     * @param id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/gravida/personal/info.json")
+    Observable<Response<PersonalInfo>> getPersonalInfo(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("api/gravida/personal/configs.json")
+    Observable<Response<PersonalConfigs>> getPersonalConfigs(@Field("id") String id);
 
 }

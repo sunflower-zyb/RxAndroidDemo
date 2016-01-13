@@ -1,20 +1,18 @@
 package com.sunflower.rxandroiddemo.api;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.sunflower.rxandroiddemo.MainActivity;
+import com.sunflower.rxandroiddemo.BuildConfig;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
-import com.sunflower.rxandroiddemo.dto.JsonResponse;
+import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
+import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
+import com.sunflower.rxandroiddemo.dto.PersonalInfo;
 import com.sunflower.rxandroiddemo.dto.Response;
+import com.sunflower.rxandroiddemo.dto.VersionDto;
 import com.sunflower.rxandroiddemo.utils.RetrofitUtil;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -24,6 +22,7 @@ import rx.schedulers.Schedulers;
 public class ApiWrapper extends RetrofitUtil {
 
     private static final String TAG = "RxJava";
+    private final int pageSize = 10;
 
 
     public Observable<String> getSmsCode2(String mobile) {
@@ -38,6 +37,11 @@ public class ApiWrapper extends RetrofitUtil {
                 });
     }
 
+    /**
+     * 获取帖子分类
+     *
+     * @return
+     */
     public Observable<List<ArticleCategory>> getArticleCategory() {
         return getService().getArticleCategory()
                 .subscribeOn(Schedulers.io())
@@ -46,6 +50,60 @@ public class ApiWrapper extends RetrofitUtil {
                     @Override
                     public Observable<List<ArticleCategory>> call(Response<List<ArticleCategory>> listResponse) {
                         return flatResponse(listResponse);
+                    }
+                });
+    }
+
+
+    public Observable<List<ArticleListDTO>> getArticleList(long id, int pageNumber) {
+        return getService().getArticleList(id, pageNumber, pageSize)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<List<ArticleListDTO>>, Observable<List<ArticleListDTO>>>() {
+                    @Override
+                    public Observable<List<ArticleListDTO>> call(Response<List<ArticleListDTO>> articleListDTOs) {
+                        return flatResponse(articleListDTOs);
+                    }
+                });
+    }
+
+    /**
+     * 版本更新
+     *
+     * @return
+     */
+    public Observable<VersionDto> checkVersion() {
+        return getService().checkVersion(BuildConfig.VERSION_NAME, "GRAVIDA", "ANDROID")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<VersionDto>, Observable<VersionDto>>() {
+                    @Override
+                    public Observable<VersionDto> call(Response<VersionDto> versionDtoResponse) {
+                        return flatResponse(versionDtoResponse);
+                    }
+                });
+    }
+
+    public Observable<PersonalInfo> getPersonalInfo() {
+        return getService().getPersonalInfo("139")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
+                    @Override
+                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
+                        return flatResponse(personalInfoResponse);
+                    }
+                });
+    }
+
+    public Observable<PersonalConfigs> getPersonalConfigs() {
+        return getService().getPersonalConfigs("139")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<PersonalConfigs>, Observable<PersonalConfigs>>() {
+                    @Override
+                    public Observable<PersonalConfigs> call(Response<PersonalConfigs> personalConfigsResponse) {
+                        return flatResponse(personalConfigsResponse);
                     }
                 });
     }
