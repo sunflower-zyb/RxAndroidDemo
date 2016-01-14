@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -141,6 +142,8 @@ public class HttpLoggingInterceptor implements Interceptor {
                 logger.log("--> END " + request.method());
             } else if (bodyEncoded(request.headers())) {
                 logger.log("--> END " + request.method() + " (encoded body omitted)");
+            } else if (request.body() instanceof MultipartBody) {
+                //如果是MultipartBody，会log出一大推乱码的东东
             } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);

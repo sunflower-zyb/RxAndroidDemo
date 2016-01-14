@@ -35,4 +35,19 @@
         android:padding="5dip"
         android:text="首页同时获得多个接口" />
 
+    <Button
+        android:id="@+id/upload_avatar_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:text="上传头像" />
+
+
+    <Button
+        android:id="@+id/comment_product_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:text="评论套餐" />
+
 </LinearLayout>

@@ -8,10 +8,12 @@ import android.view.MenuItem;
 import com.sunflower.rxandroiddemo.api.ApiWrapper;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
+import com.sunflower.rxandroiddemo.dto.PersonalInfo;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -113,6 +115,38 @@ public class MainActivity extends BaseActivity {
                     }
                 }));
         mCompositeSubscription.add(s1);
+    }
+
+
+    @OnClick(R.id.upload_avatar_btn)
+    void updatePersonalInfo() {
+        ApiWrapper wrapper = new ApiWrapper();
+        String path = "/storage/emulated/0/Tencent/QQfile_recv/111355.60083131_1280.jpg";
+        wrapper.updatePersonalInfo2(path)
+                .subscribe(newSubscriber(new Action1<PersonalInfo>() {
+                    @Override
+                    public void call(PersonalInfo personalInfo) {
+                        Log.i(TAG, "updatePersonalInfo---" + personalInfo.avatar);
+                    }
+                }))
+        ;
+    }
+
+    @OnClick(R.id.comment_product_btn)
+    void commentProduct() {
+        ApiWrapper wrapper = new ApiWrapper();
+        long orderId = 511;
+        long productId = 9;
+        String content = "xixi";
+        List<String> paths = Arrays.asList("/storage/emulated/0/UCDownloads/640.jpg",
+                "/storage/emulated/0/Pictures/Screenshots/Screenshot_2016-01-11-16-34-44.jpeg");
+        wrapper.commentProduct(orderId, productId, content, paths)
+                .subscribe(newSubscriber(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+//                        Log.i(TAG, "")
+                    }
+                }));
     }
 
     @Override

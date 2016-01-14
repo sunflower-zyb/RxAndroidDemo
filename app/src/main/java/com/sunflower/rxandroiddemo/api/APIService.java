@@ -8,10 +8,15 @@ import com.sunflower.rxandroiddemo.dto.Response;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import rx.Observable;
 
 /**
@@ -85,5 +90,20 @@ public interface APIService {
     @FormUrlEncoded
     @POST("api/gravida/personal/configs.json")
     Observable<Response<PersonalConfigs>> getPersonalConfigs(@Field("id") String id);
+
+    @Multipart
+    @POST("api/gravida/personal/update.json")
+    Observable<Response<PersonalInfo>> updatePersonalInfo(@Part("avatar") RequestBody avatar,
+                                                          @Part("id") String id);
+
+    @Multipart
+    @POST("api/gravida/personal/update.json")
+    Observable<Response<PersonalInfo>> updatePersonalInfo(@PartMap Map<String, RequestBody> params);
+
+
+    @Multipart
+    @POST("api/gravida/product/comment.json")
+    Observable<Response<Object>> commentProduct(@PartMap Map<String, RequestBody> params);
+
 
 }
