@@ -4,6 +4,7 @@ import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
 import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
 import com.sunflower.rxandroiddemo.dto.PersonalInfo;
+import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.Response;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 
@@ -104,6 +105,13 @@ public interface APIService {
     @Multipart
     @POST("api/gravida/product/comment.json")
     Observable<Response<Object>> commentProduct(@PartMap Map<String, RequestBody> params);
+
+
+    @FormUrlEncoded
+    @POST("api/gravida/remind/flow.json")
+    Observable<Response<List<RemindDTO>>> getNotificationList(@Field("id") String id);
+
+
 
 
 }

@@ -5,7 +5,11 @@ import android.util.Log;
 import com.sunflower.rxandroiddemo.api.APIService;
 import com.sunflower.rxandroiddemo.dto.Response;
 
+import java.io.File;
+
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
@@ -22,19 +26,19 @@ public class RetrofitUtil {
     /**
      * 服务器地址
      */
-    private final String API_HOST = APIHost.API_HOST;
+    private static final String API_HOST = APIHost.API_HOST;
 
-    private APIService service;
-    private Retrofit retrofit;
+    private static APIService service;
+    private static Retrofit retrofit;
 
-    public APIService getService() {
+    public static APIService getService() {
         if (service == null) {
             service = getRetrofit().create(APIService.class);
         }
         return service;
     }
 
-    private Retrofit getRetrofit() {
+    private static Retrofit getRetrofit() {
         if (retrofit == null) {
 
 //            OkHttpClient client = new OkHttpClient();
@@ -49,6 +53,7 @@ public class RetrofitUtil {
                     Log.i("RxJava", "LoggingInterceptor---" + message);
                 }
             });
+
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
@@ -114,6 +119,22 @@ public class RetrofitUtil {
             this.code = code;
             this.message = message;
         }
+    }
+
+    protected RequestBody createRequestBody(int param) {
+        return RequestBody.create(MediaType.parse("text/plain"), String.valueOf(param));
+    }
+
+    protected RequestBody createRequestBody(long param) {
+        return RequestBody.create(MediaType.parse("text/plain"), String.valueOf(param));
+    }
+
+    protected RequestBody createRequestBody(String param) {
+        return RequestBody.create(MediaType.parse("text/plain"), param);
+    }
+
+    protected RequestBody createRequestBody(File param) {
+        return RequestBody.create(MediaType.parse("image/*"), param);
     }
 
 

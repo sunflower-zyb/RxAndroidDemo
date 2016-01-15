@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dip"
-        android:text="上传头像" />
+        android:text="上传头像（上传一张图片）" />
 
 
     <Button
@@ -48,6 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dip"
-        android:text="评论套餐" />
+        android:text="评论套餐（上传多张图片）" />
 
 </LinearLayout>

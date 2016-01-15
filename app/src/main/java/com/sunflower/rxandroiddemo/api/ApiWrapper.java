@@ -5,6 +5,7 @@ import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
 import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
 import com.sunflower.rxandroiddemo.dto.PersonalInfo;
+import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.Response;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 import com.sunflower.rxandroiddemo.utils.RetrofitUtil;
@@ -60,6 +61,13 @@ public class ApiWrapper extends RetrofitUtil {
     }
 
 
+    /**
+     * 根据类型id，获取文章列表
+     *
+     * @param id
+     * @param pageNumber
+     * @return
+     */
     public Observable<List<ArticleListDTO>> getArticleList(long id, int pageNumber) {
         return getService().getArticleList(id, pageNumber, pageSize)
                 .subscribeOn(Schedulers.io())
@@ -113,22 +121,13 @@ public class ApiWrapper extends RetrofitUtil {
                 });
     }
 
-    public Observable<PersonalInfo> updatePersonalInfo(String path) {
-        File file = new File(path);
-        RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), file);
-        return getService().updatePersonalInfo(avatar, "166")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
-                    @Override
-                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
-                        return flatResponse(personalInfoResponse);
-                    }
-                });
 
-    }
-
-
+    /**
+     * 上传单个文件
+     *
+     * @param path
+     * @return
+     */
     public Observable<PersonalInfo> updatePersonalInfo2(String path) {
         File file = new File(path);
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "166");
@@ -148,6 +147,15 @@ public class ApiWrapper extends RetrofitUtil {
 
     }
 
+    /**
+     * 同时长传多个文件
+     *
+     * @param orderId
+     * @param productId
+     * @param content
+     * @param paths
+     * @return
+     */
     public Observable<Object> commentProduct(long orderId, long productId, String content, List<String> paths) {
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "166");
         RequestBody orderIdBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(orderId));
@@ -177,5 +185,24 @@ public class ApiWrapper extends RetrofitUtil {
 
     }
 
+
+    /*
+    * https://github.com/square/okhttp/blob/master/samples/guide/src/main/java/okhttp3/recipes/Progress.java
+    * http://stackoverflow.com/questions/29958881/download-progress-with-rxjava-okhttp-and-okio-in-android
+    * 下载文件的进度
+    * */
+
+
+    public Observable<List<RemindDTO>> getNotificationList() {
+        return getService().getNotificationList("139")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<List<RemindDTO>>, Observable<List<RemindDTO>>>() {
+                    @Override
+                    public Observable<List<RemindDTO>> call(Response<List<RemindDTO>> listResponse) {
+                        return flatResponse(listResponse);
+                    }
+                });
+    }
 
 }

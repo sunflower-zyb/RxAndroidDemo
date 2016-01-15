@@ -8,21 +8,25 @@ import android.view.MenuItem;
 import com.sunflower.rxandroiddemo.api.ApiWrapper;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
+import com.sunflower.rxandroiddemo.dto.HomeRequest;
+import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
 import com.sunflower.rxandroiddemo.dto.PersonalInfo;
+import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 
-import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscription;
+import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 
 public class MainActivity extends BaseActivity {
 
@@ -36,26 +40,44 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.get_sms_btn)
     void getSms() {
-        ApiWrapper manager = new ApiWrapper();
-        manager.getSmsCode2("15813351726")
-                .retry(2)
-                .retry(new Func2<Integer, Throwable, Boolean>() {
+        Observable
+                .just("1", "2")
+                .interval(2, TimeUnit.SECONDS)
+                .subscribe(new Subscriber<Long>() {
                     @Override
-                    public Boolean call(Integer integer, Throwable throwable) {
-                        Log.i(TAG, "call " + integer);
-                        if (throwable instanceof ConnectException && integer < 3)
-                            return true;
-                        else
-                            return false;
+                    public void onCompleted() {
+                        Log.i(TAG, "AsyncSubject onCompleted");
                     }
-                })
-                .subscribe(newSubscriber(new Action1<String>() {
+
                     @Override
-                    public void call(String s) {
-                        Log.i(TAG, "call " + s);
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "AsyncSubject onError" + e.getMessage());
                     }
-                }))
-        ;
+
+                    @Override
+                    public void onNext(Long s) {
+                        Log.i(TAG, "AsyncSubject onNext" + s);
+                    }
+                });
+//        ApiWrapper manager = new ApiWrapper();
+//        manager.getSmsCode2("15813351726")
+//                .retry(2)
+//                .retry(new Func2<Integer, Throwable, Boolean>() {
+//                    @Override
+//                    public Boolean call(Integer integer, Throwable throwable) {
+//                        Log.i(TAG, "call " + integer);
+//                        if (throwable instanceof ConnectException && integer < 3)
+//                            return true;
+//                        else
+//                            return false;
+//                    }
+//                })
+//                .subscribe(newSubscriber(new Action1<String>() {
+//                    @Override
+//                    public void call(String s) {
+//                        Log.i(TAG, "call " + s);
+//                    }
+//                }));
     }
 
 
@@ -68,12 +90,14 @@ public class MainActivity extends BaseActivity {
     void getArticleList() {
         final ApiWrapper wrapper = new ApiWrapper();
         wrapper.getArticleCategory()
+                //可以在doOnNext处理数据
                 .doOnNext(new Action1<List<ArticleCategory>>() {
                     @Override
                     public void call(List<ArticleCategory> articleCategories) {
                         categoryId = articleCategories.get(0).getId();
                     }
                 })
+                        //设置请求次数
                 .retry(new Func2<Integer, Throwable, Boolean>() {
                     @Override
                     public Boolean call(Integer integer, Throwable throwable) {
@@ -87,7 +111,6 @@ public class MainActivity extends BaseActivity {
                 .flatMap(new Func1<List<ArticleCategory>, Observable<List<ArticleListDTO>>>() {
                     @Override
                     public Observable<List<ArticleListDTO>> call(List<ArticleCategory> articleCategories) {
-
                         return wrapper.getArticleList(categoryId, 1);
                     }
                 })
@@ -105,16 +128,38 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.get_home_btn)
     void getHome() {
+        //同时请求多个接口
         ApiWrapper wrapper = new ApiWrapper();
-        Subscription s1 = wrapper
-                .checkVersion()
-                .subscribe(newSubscriber(new Action1<VersionDto>() {
+        //将多个接口的返回结果结合成一个对象
+        Observable.zip(wrapper.checkVersion(), wrapper.getPersonalInfo(), wrapper.getPersonalConfigs(),
+                new Func3<VersionDto, PersonalInfo, PersonalConfigs, HomeRequest>() {
                     @Override
-                    public void call(VersionDto dto) {
-                        Log.i(TAG, "checkVersion--" + dto.toString());
+                    public HomeRequest call(VersionDto versionDto, PersonalInfo personalInfo, PersonalConfigs personalConfigs) {
+                        HomeRequest request = new HomeRequest();
+                        request.setVersionDto(versionDto);
+                        request.setPersonalInfo(personalInfo);
+                        request.setPersonalConfigs(personalConfigs);
+                        return request;
                     }
-                }));
-        mCompositeSubscription.add(s1);
+                })
+                .subscribe(newSubscriber(new Action1<HomeRequest>() {
+                    @Override
+                    public void call(HomeRequest request) {
+                        Log.i(TAG, "versionDto--" + request.getVersionDto().toString());
+                        Log.i(TAG, "personalInfo--" + request.getPersonalInfo().toString());
+                        Log.i(TAG, "PersonalConfigs--" + request.getPersonalConfigs().toString());
+                    }
+                }))
+        ;
+//        Subscription s1 = wrapper
+//                .checkVersion()
+//                .subscribe(newSubscriber(new Action1<VersionDto>() {
+//                    @Override
+//                    public void call(VersionDto dto) {
+//                        Log.i(TAG, "checkVersion--" + dto.toString());
+//                    }
+//                }));
+//        mCompositeSubscription.add(s1);
     }
 
 
@@ -145,6 +190,24 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void call(Object o) {
 //                        Log.i(TAG, "")
+                    }
+                }));
+    }
+
+
+    void getNotification() {
+        ApiWrapper wrapper = new ApiWrapper();
+        wrapper.getNotificationList()
+                .doOnNext(new Action1<List<RemindDTO>>() {
+                    @Override
+                    public void call(List<RemindDTO> remindDTOs) {
+//                        Collections.
+                    }
+                })
+                .subscribe(newSubscriber(new Action1<List<RemindDTO>>() {
+                    @Override
+                    public void call(List<RemindDTO> remindDTOs) {
+
                     }
                 }));
     }

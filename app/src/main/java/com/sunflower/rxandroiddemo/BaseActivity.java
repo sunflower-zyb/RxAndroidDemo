@@ -77,7 +77,9 @@ public class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onNext(T t) {
-                onNext.call(t);
+                if (!mCompositeSubscription.isUnsubscribed()) {
+                    onNext.call(t);
+                }
             }
         };
     }
