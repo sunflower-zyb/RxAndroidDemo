@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
@@ -101,6 +102,15 @@ public interface APIService {
     @POST("api/gravida/personal/update.json")
     Observable<Response<PersonalInfo>> updatePersonalInfo(@PartMap Map<String, RequestBody> params);
 
+    /**
+     * 测试用对象作为参数，失败
+     *
+     * @param info
+     * @return
+     */
+    @POST("api/gravida/personal/update.json")
+    Observable<Response<PersonalInfo>> updatePersonalInfo(@Body PersonalInfo info);
+
 
     @Multipart
     @POST("api/gravida/product/comment.json")
@@ -110,8 +120,6 @@ public interface APIService {
     @FormUrlEncoded
     @POST("api/gravida/remind/flow.json")
     Observable<Response<List<RemindDTO>>> getNotificationList(@Field("id") String id);
-
-
 
 
 }

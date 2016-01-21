@@ -1,7 +1,9 @@
 package com.sunflower.rxandroiddemo.utils;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.sunflower.rxandroiddemo.BaseApplication;
 import com.sunflower.rxandroiddemo.api.APIService;
 import com.sunflower.rxandroiddemo.dto.Response;
 
@@ -31,7 +33,7 @@ public class RetrofitUtil {
     private static APIService service;
     private static Retrofit retrofit;
 
-    public static APIService getService() {
+    protected static APIService getService() {
         if (service == null) {
             service = getRetrofit().create(APIService.class);
         }
@@ -50,13 +52,22 @@ public class RetrofitUtil {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
                 public void log(String message) {
-                    Log.i("RxJava", "LoggingInterceptor---" + message);
+                    Log.i("RxJava", message);
                 }
             });
 
+            //网络缓存路径文件
+            File httpCacheDirectory = new File(BaseApplication.getInstance().getExternalCacheDir(), "responses");
+            //通过拦截器设置缓存，暂未实现
+            CacheInterceptor cacheInterceptor = new CacheInterceptor();
 
             OkHttpClient client = new OkHttpClient.Builder()
+                    //设置缓存
+//                    .cache(new Cache(httpCacheDirectory, 10 * 1024 * 1024))
+                    //log请求参数
                     .addInterceptor(interceptor)
+                            //网络请求缓存，未实现
+//                    .addNetworkInterceptor(cacheInterceptor)
                     .build();
             retrofit = new Retrofit.Builder()
                     .client(client)
@@ -111,6 +122,10 @@ public class RetrofitUtil {
     }
 
 
+    /**
+     * 自定义异常，当接口返回的{@link Response#code}不为{@link Constant#OK}时，需要跑出此异常
+     * eg：登陆时验证码错误；参数为传递等
+     */
     public static class APIException extends Exception {
         public String code;
         public String message;
@@ -121,6 +136,13 @@ public class RetrofitUtil {
         }
     }
 
+    /**
+     * 当{@link APIService}中接口的注解为{@link retrofit2.http.Multipart}时，参数为{@link RequestBody}
+     * 生成对应的RequestBody
+     *
+     * @param param
+     * @return
+     */
     protected RequestBody createRequestBody(int param) {
         return RequestBody.create(MediaType.parse("text/plain"), String.valueOf(param));
     }
@@ -135,6 +157,17 @@ public class RetrofitUtil {
 
     protected RequestBody createRequestBody(File param) {
         return RequestBody.create(MediaType.parse("image/*"), param);
+    }
+
+    /**
+     * 已二进制传递图片文件，对图片文件进行了压缩
+     *
+     * @param path 文件路径
+     * @return
+     */
+    protected RequestBody createPictureRequestBody(String path) {
+        Bitmap bitmap = ClippingPicture.decodeResizeBitmapSd(path, 400, 800);
+        return RequestBody.create(MediaType.parse("image/*"), ClippingPicture.bitmapToBytes(bitmap));
     }
 
 

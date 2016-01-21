@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.sunflower.rxandroiddemo.api.ApiWrapper;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
@@ -13,22 +15,28 @@ import com.sunflower.rxandroiddemo.dto.PersonalConfigs;
 import com.sunflower.rxandroiddemo.dto.PersonalInfo;
 import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
+import com.sunflower.rxandroiddemo.utils.CropCircleTransformation;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 
 public class MainActivity extends BaseActivity {
+
+
+    @InjectView(R.id.avatar)
+    ImageView mAvatar;
 
 
     @Override
@@ -40,44 +48,44 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.get_sms_btn)
     void getSms() {
-        Observable
-                .just("1", "2")
-                .interval(2, TimeUnit.SECONDS)
-                .subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.i(TAG, "AsyncSubject onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i(TAG, "AsyncSubject onError" + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(Long s) {
-                        Log.i(TAG, "AsyncSubject onNext" + s);
-                    }
-                });
-//        ApiWrapper manager = new ApiWrapper();
-//        manager.getSmsCode2("15813351726")
-//                .retry(2)
-//                .retry(new Func2<Integer, Throwable, Boolean>() {
+//        Observable
+//                .just("1", "2")
+//                .interval(2, TimeUnit.SECONDS)
+//                .subscribe(new Subscriber<Long>() {
 //                    @Override
-//                    public Boolean call(Integer integer, Throwable throwable) {
-//                        Log.i(TAG, "call " + integer);
-//                        if (throwable instanceof ConnectException && integer < 3)
-//                            return true;
-//                        else
-//                            return false;
+//                    public void onCompleted() {
+//                        Log.i(TAG, "AsyncSubject onCompleted");
 //                    }
-//                })
-//                .subscribe(newSubscriber(new Action1<String>() {
+//
 //                    @Override
-//                    public void call(String s) {
-//                        Log.i(TAG, "call " + s);
+//                    public void onError(Throwable e) {
+//                        Log.i(TAG, "AsyncSubject onError" + e.getMessage());
 //                    }
-//                }));
+//
+//                    @Override
+//                    public void onNext(Long s) {
+//                        Log.i(TAG, "AsyncSubject onNext" + s);
+//                    }
+//                });
+        ApiWrapper manager = new ApiWrapper();
+        manager.getSmsCode2("15813351726")
+                .retry(2)
+                .retry(new Func2<Integer, Throwable, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer, Throwable throwable) {
+                        Log.i(TAG, "call " + integer);
+                        if (throwable instanceof ConnectException && integer < 3)
+                            return true;
+                        else
+                            return false;
+                    }
+                })
+                .subscribe(newSubscriber(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Log.i(TAG, "call " + s);
+                    }
+                }));
     }
 
 
@@ -167,14 +175,19 @@ public class MainActivity extends BaseActivity {
     void updatePersonalInfo() {
         ApiWrapper wrapper = new ApiWrapper();
         String path = "/storage/emulated/0/Tencent/QQfile_recv/111355.60083131_1280.jpg";
-        wrapper.updatePersonalInfo2(path)
+        wrapper.updatePersonalInfo(path)
                 .subscribe(newSubscriber(new Action1<PersonalInfo>() {
                     @Override
                     public void call(PersonalInfo personalInfo) {
                         Log.i(TAG, "updatePersonalInfo---" + personalInfo.avatar);
+                        //设置圆形头像
+                        Glide.with(MainActivity.this)
+                                .load(personalInfo.avatar)
+                                .bitmapTransform(new CropCircleTransformation(MainActivity.this))
+                                .into(mAvatar);
                     }
-                }))
-        ;
+                }));
+
     }
 
     @OnClick(R.id.comment_product_btn)
@@ -197,7 +210,7 @@ public class MainActivity extends BaseActivity {
 
     void getNotification() {
         ApiWrapper wrapper = new ApiWrapper();
-        wrapper.getNotificationList()
+        Subscription subscription = wrapper.getNotificationList()
                 .doOnNext(new Action1<List<RemindDTO>>() {
                     @Override
                     public void call(List<RemindDTO> remindDTOs) {
@@ -210,6 +223,7 @@ public class MainActivity extends BaseActivity {
 
                     }
                 }));
+        mCompositeSubscription.add(subscription);
     }
 
     @Override

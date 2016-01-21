@@ -43,6 +43,12 @@
         android:text="上传头像（上传一张图片）" />
 
 
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="40dip"
+        android:layout_height="40dip" />
+
+
     <Button
         android:id="@+id/comment_product_btn"
         android:layout_width="wrap_content"

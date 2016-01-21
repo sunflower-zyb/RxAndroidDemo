@@ -64,10 +64,11 @@ public class BaseActivity extends AppCompatActivity {
                     RetrofitUtil.APIException exception = (RetrofitUtil.APIException) e;
                     showToast(exception.message);
                 } else if (e instanceof SocketTimeoutException) {
-                    showToast("连接超时");
+                    showToast(e.getMessage());
+//                    showToast("连接超时");
 //                    Log.e(TAG, "onError " + e.getMessage());
                 } else if (e instanceof ConnectException) {
-                    Log.e(TAG, "onError " + "无法连接");
+                    showToast(e.getMessage());
                 } else {
                     Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }

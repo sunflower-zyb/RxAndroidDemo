@@ -1,5 +1,7 @@
 package com.sunflower.rxandroiddemo.api;
 
+import android.graphics.Bitmap;
+
 import com.sunflower.rxandroiddemo.BuildConfig;
 import com.sunflower.rxandroiddemo.dto.ArticleCategory;
 import com.sunflower.rxandroiddemo.dto.ArticleListDTO;
@@ -8,6 +10,7 @@ import com.sunflower.rxandroiddemo.dto.PersonalInfo;
 import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.Response;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
+import com.sunflower.rxandroiddemo.utils.ClippingPicture;
 import com.sunflower.rxandroiddemo.utils.RetrofitUtil;
 
 import java.io.File;
@@ -128,13 +131,15 @@ public class ApiWrapper extends RetrofitUtil {
      * @param path
      * @return
      */
-    public Observable<PersonalInfo> updatePersonalInfo2(String path) {
+    public Observable<PersonalInfo> updatePersonalInfo(String path) {
         File file = new File(path);
-        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "166");
-        RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), file);
+        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "139");
+//        RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), file);
+        Bitmap bitmap = ClippingPicture.decodeBitmapSd(path);
+        RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), ClippingPicture.bitmapToBytes(bitmap));
         Map<String, RequestBody> params = new HashMap<>();
         params.put("id", id);
-        params.put("image\"; filename=\"" + file.getName() + "", avatar);
+        params.put("avatar\"; filename=\"" + file.getName() + "", avatar);
         return getService().updatePersonalInfo(params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -145,6 +150,24 @@ public class ApiWrapper extends RetrofitUtil {
                     }
                 });
 
+    }
+
+    /**
+     * 测试使用对象作为参数，失败
+     *
+     * @param info
+     * @return
+     */
+    public Observable<PersonalInfo> updatePersonalInfo(PersonalInfo info) {
+        return getService().updatePersonalInfo(info)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
+                    @Override
+                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
+                        return flatResponse(personalInfoResponse);
+                    }
+                });
     }
 
     /**
@@ -160,7 +183,8 @@ public class ApiWrapper extends RetrofitUtil {
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "166");
         RequestBody orderIdBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(orderId));
         RequestBody productIdBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(productId));
-        RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), content);
+//        RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), content);
+        RequestBody contentBody = createRequestBody(content);
         Map<String, RequestBody> params = new HashMap<>();
         params.put("id", id);
         params.put("orderId", orderIdBody);
