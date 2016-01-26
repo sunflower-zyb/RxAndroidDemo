@@ -15,6 +15,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -48,6 +49,7 @@ public interface APIService {
     Observable<Response<String>> getSmsCode(@Field("mobile") String mobile, @Field("appType") String appType);
 
 
+    @Headers("Cache-Control: public, max-age=604800 ,max-stale=2419200")
     @POST("api/gravida/article/categories.json")
     Observable<Response<List<ArticleCategory>>> getArticleCategory();
 
@@ -59,6 +61,7 @@ public interface APIService {
      * @param pageSize
      * @return
      */
+    @Headers("Cache-Control: public, max-age=604800 ,max-stale=2419200")
     @FormUrlEncoded
     @POST("api/gravida/article/list.json")
     Observable<Response<List<ArticleListDTO>>> getArticleList(@Field("id") long id,

@@ -9,10 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView
+
+    <Button
+        android:id="@+id/test_github_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:padding="5dip"
+        android:text="测试Github API" />
 
     <Button
         android:id="@+id/get_sms_btn"

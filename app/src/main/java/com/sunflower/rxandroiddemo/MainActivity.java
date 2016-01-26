@@ -1,5 +1,6 @@
 package com.sunflower.rxandroiddemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +47,14 @@ public class MainActivity extends BaseActivity {
         ButterKnife.inject(this);
     }
 
+
+    @OnClick(R.id.test_github_btn)
+    void gotoGithubAPIActivity() {
+        Intent intent = new Intent(this, GithubAPIActivity.class);
+        startActivity(intent);
+    }
+
+
     @OnClick(R.id.get_sms_btn)
     void getSms() {
 //        Observable
@@ -68,7 +77,7 @@ public class MainActivity extends BaseActivity {
 //                    }
 //                });
         ApiWrapper manager = new ApiWrapper();
-        manager.getSmsCode2("15813351726")
+        final Subscription subscription = manager.getSmsCode2("15813351726")
                 .retry(2)
                 .retry(new Func2<Integer, Throwable, Boolean>() {
                     @Override
@@ -250,7 +259,11 @@ public class MainActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.action_pdf) {
+        } else if (id == R.id.action_github) {
+
+            Intent intent = new Intent(this, GithubAPIActivity.class);
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

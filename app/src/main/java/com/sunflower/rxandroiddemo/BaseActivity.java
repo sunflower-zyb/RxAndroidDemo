@@ -82,6 +82,8 @@ public class BaseActivity extends AppCompatActivity {
                     onNext.call(t);
                 }
             }
+
+
         };
     }
 

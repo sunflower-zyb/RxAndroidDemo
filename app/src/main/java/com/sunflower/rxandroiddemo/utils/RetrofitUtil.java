@@ -9,6 +9,7 @@ import com.sunflower.rxandroiddemo.dto.Response;
 
 import java.io.File;
 
+import okhttp3.Cache;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -63,10 +64,11 @@ public class RetrofitUtil {
 
             OkHttpClient client = new OkHttpClient.Builder()
                     //设置缓存
-//                    .cache(new Cache(httpCacheDirectory, 10 * 1024 * 1024))
-                    //log请求参数
+                    .cache(new Cache(httpCacheDirectory, 10 * 1024 * 1024))
+                            //log请求参数
                     .addInterceptor(interceptor)
                             //网络请求缓存，未实现
+                    .addInterceptor(cacheInterceptor)
 //                    .addNetworkInterceptor(cacheInterceptor)
                     .build();
             retrofit = new Retrofit.Builder()

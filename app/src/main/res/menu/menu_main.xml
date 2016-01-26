@@ -10,8 +10,8 @@
 
 
     <item
-        android:id="@+id/action_pdf"
+        android:id="@+id/action_github"
         android:orderInCategory="100"
-        android:title="显示PDF"
+        android:title="测试Github API"
         app:showAsAction="never" />
 </menu>
