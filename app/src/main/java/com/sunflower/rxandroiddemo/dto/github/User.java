@@ -39,36 +39,36 @@ public class User {
      * updated_at : 2016-01-13T08:29:15Z
      */
 
-    private String login;
-    private int id;
-    private String avatar_url;
-    private String gravatar_id;
-    private String url;
-    private String html_url;
-    private String followers_url;
-    private String following_url;
-    private String gists_url;
-    private String starred_url;
-    private String subscriptions_url;
-    private String organizations_url;
-    private String repos_url;
-    private String events_url;
-    private String received_events_url;
-    private String type;
-    private boolean site_admin;
-    private Object name;
-    private Object company;
-    private Object blog;
-    private Object location;
-    private Object email;
-    private Object hireable;
-    private Object bio;
-    private int public_repos;
-    private int public_gists;
-    private int followers;
-    private int following;
-    private String created_at;
-    private String updated_at;
+    public String login;
+    public int id;
+    public String avatar_url;
+    public String gravatar_id;
+    public String url;
+    public String html_url;
+    public String followers_url;
+    public String following_url;
+    public String gists_url;
+    public String starred_url;
+    public String subscriptions_url;
+    public String organizations_url;
+    public String repos_url;
+    public String events_url;
+    public String received_events_url;
+    public String type;
+    public boolean site_admin;
+    public Object name;
+    public Object company;
+    public Object blog;
+    public String location;
+    public Object email;
+    public Object hireable;
+    public Object bio;
+    public int public_repos;
+    public int public_gists;
+    public int followers;
+    public int following;
+    public String created_at;
+    public String updated_at;
 
     public String getLogin() {
         return login;
@@ -150,8 +150,8 @@ public class User {
         return blog;
     }
 
-    public Object getLocation() {
-        return location;
+    public String getLocation() {
+        return String.valueOf(location);
     }
 
     public Object getEmail() {
@@ -188,5 +188,42 @@ public class User {
 
     public String getUpdated_at() {
         return updated_at;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "login='" + login + '\'' +
+                ", id=" + id +
+                ", avatar_url='" + avatar_url + '\'' +
+                ", gravatar_id='" + gravatar_id + '\'' +
+                ", url='" + url + '\'' +
+                ", html_url='" + html_url + '\'' +
+                ", followers_url='" + followers_url + '\'' +
+                ", following_url='" + following_url + '\'' +
+                ", gists_url='" + gists_url + '\'' +
+                ", starred_url='" + starred_url + '\'' +
+                ", subscriptions_url='" + subscriptions_url + '\'' +
+                ", organizations_url='" + organizations_url + '\'' +
+                ", repos_url='" + repos_url + '\'' +
+                ", events_url='" + events_url + '\'' +
+                ", received_events_url='" + received_events_url + '\'' +
+                ", type='" + type + '\'' +
+                ", site_admin=" + site_admin +
+                ", name=" + name +
+                ", company=" + company +
+                ", blog=" + blog +
+                ", location=" + location +
+                ", email=" + email +
+                ", hireable=" + hireable +
+                ", bio=" + bio +
+                ", public_repos=" + public_repos +
+                ", public_gists=" + public_gists +
+                ", followers=" + followers +
+                ", following=" + following +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                '}';
     }
 }

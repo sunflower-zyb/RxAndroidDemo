@@ -15,10 +15,14 @@ public interface GithubService {
 
 
     @GET("/users/{user}")
+    Observable<User> login(@Path("user") String user);
+
+
+    @GET("/users/{user}")
     Observable<User> getFeed(@Path("user") String user);
 
 
     @PATCH("/user")
-    Observable<User> updateLocation(@Path("location") String location);
+    Observable<User> updateLocation(User user);
 
 }

@@ -20,6 +20,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -124,5 +125,21 @@ public interface APIService {
     @POST("api/gravida/remind/flow.json")
     Observable<Response<List<RemindDTO>>> getNotificationList(@Field("id") String id);
 
+
+    /**
+     * 取消收藏帖子
+     * 与{@link #cancelFavorite(String, List)}效果一致
+     *
+     * @param id
+     * @param articleId 传递的为数组
+     * @return
+     */
+    @POST("api/gravida/article/unfavourite.json")
+    Observable<Response<Object>> cancelFavoriteWithQuery(@Query("id") String id, @Query("articleId") List<Long> articleId);
+
+
+    @FormUrlEncoded
+    @POST("api/gravida/article/unfavourite.json")
+    Observable<Response<Object>> cancelFavorite(@Field("id") String id, @Field("articleId") List<Long> articleId);
 
 }

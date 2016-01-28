@@ -29,7 +29,7 @@ public class RetrofitUtil {
     /**
      * 服务器地址
      */
-    private static final String API_HOST = APIHost.API_HOST;
+    private static final String API_HOST = SecretConstant.API_HOST;
 
     private static APIService service;
     private static Retrofit retrofit;

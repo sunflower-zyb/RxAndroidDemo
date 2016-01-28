@@ -171,7 +171,7 @@ public class ApiWrapper extends RetrofitUtil {
     }
 
     /**
-     * 同时长传多个文件
+     * 同时传递多个文件
      *
      * @param orderId
      * @param productId
@@ -227,6 +227,26 @@ public class ApiWrapper extends RetrofitUtil {
                         return flatResponse(listResponse);
                     }
                 });
+    }
+
+
+    /**
+     * 传递数组
+     *
+     * @param articleId
+     * @return
+     */
+    public Observable<Object> cancelFavorite(List<Long> articleId) {
+        return getService().cancelFavorite("139", articleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<Object>, Observable<Object>>() {
+                    @Override
+                    public Observable<Object> call(Response<Object> objectResponse) {
+                        return flatResponse(objectResponse);
+                    }
+                });
+
     }
 
 }

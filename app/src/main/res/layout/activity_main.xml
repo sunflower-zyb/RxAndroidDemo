@@ -59,4 +59,11 @@
         android:padding="5dip"
         android:text="评论套餐（上传多张图片）" />
 
+    <Button
+        android:id="@+id/cancel_favorite_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:text="取消收藏帖子" />
+
 </LinearLayout>

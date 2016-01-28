@@ -10,6 +10,7 @@ import com.sunflower.rxandroiddemo.utils.RetrofitUtil;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
+import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
@@ -36,6 +37,11 @@ public class BaseActivity extends AppCompatActivity {
         mCompositeSubscription = new CompositeSubscription();
     }
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        ButterKnife.inject(this);
+    }
 
     /**
      * 创建观察者

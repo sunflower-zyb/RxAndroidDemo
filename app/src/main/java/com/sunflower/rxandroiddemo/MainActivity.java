@@ -23,7 +23,6 @@ import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
@@ -44,7 +43,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
     }
 
 
@@ -57,25 +55,6 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.get_sms_btn)
     void getSms() {
-//        Observable
-//                .just("1", "2")
-//                .interval(2, TimeUnit.SECONDS)
-//                .subscribe(new Subscriber<Long>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        Log.i(TAG, "AsyncSubject onCompleted");
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i(TAG, "AsyncSubject onError" + e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onNext(Long s) {
-//                        Log.i(TAG, "AsyncSubject onNext" + s);
-//                    }
-//                });
         ApiWrapper manager = new ApiWrapper();
         final Subscription subscription = manager.getSmsCode2("15813351726")
                 .retry(2)
@@ -233,6 +212,19 @@ public class MainActivity extends BaseActivity {
                     }
                 }));
         mCompositeSubscription.add(subscription);
+    }
+
+    @OnClick(R.id.cancel_favorite_btn)
+    void cancelFavorite() {
+        List<Long> articleId = Arrays.asList(1L, 91L);
+        ApiWrapper wrapper = new ApiWrapper();
+        wrapper.cancelFavorite(articleId)
+                .subscribe(newSubscriber(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        Log.i(TAG, "cancelFavorite-- " + "Success");
+                    }
+                }));
     }
 
     @Override
