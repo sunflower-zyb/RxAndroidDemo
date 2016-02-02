@@ -3,13 +3,11 @@ package com.sunflower.rxandroiddemo.utils;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.sunflower.rxandroiddemo.BaseApplication;
 import com.sunflower.rxandroiddemo.api.APIService;
 import com.sunflower.rxandroiddemo.dto.Response;
 
 import java.io.File;
 
-import okhttp3.Cache;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -34,7 +32,7 @@ public class RetrofitUtil {
     private static APIService service;
     private static Retrofit retrofit;
 
-    protected static APIService getService() {
+    public static APIService getService() {
         if (service == null) {
             service = getRetrofit().create(APIService.class);
         }
@@ -43,33 +41,24 @@ public class RetrofitUtil {
 
     private static Retrofit getRetrofit() {
         if (retrofit == null) {
-
-//            OkHttpClient client = new OkHttpClient();
-// set time out interval
-//            client.setReadTimeout(10, TimeUnit.MINUTES);
-//            client.setConnectTimeout(10, TimeUnit.MINUTES);
-//            client.setWriteTimeout(10, TimeUnit.MINUTES);
-
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
                 public void log(String message) {
                     Log.i("RxJava", message);
                 }
             });
-
             //网络缓存路径文件
-            File httpCacheDirectory = new File(BaseApplication.getInstance().getExternalCacheDir(), "responses");
+            // File httpCacheDirectory = new File(BaseApplication.getInstance().getExternalCacheDir(), "responses");
             //通过拦截器设置缓存，暂未实现
-            CacheInterceptor cacheInterceptor = new CacheInterceptor();
+            //CacheInterceptor cacheInterceptor = new CacheInterceptor();
 
             OkHttpClient client = new OkHttpClient.Builder()
                     //设置缓存
-                    .cache(new Cache(httpCacheDirectory, 10 * 1024 * 1024))
-                            //log请求参数
+                    //      .cache(new Cache(httpCacheDirectory, 10 * 1024 * 1024))
+                    //log请求参数
                     .addInterceptor(interceptor)
                             //网络请求缓存，未实现
-                    .addInterceptor(cacheInterceptor)
-//                    .addNetworkInterceptor(cacheInterceptor)
+                            //    .addInterceptor(cacheInterceptor)
                     .build();
             retrofit = new Retrofit.Builder()
                     .client(client)
@@ -93,18 +82,40 @@ public class RetrofitUtil {
 
             @Override
             public void call(Subscriber<? super T> subscriber) {
-                switch (response.code) {
-                    case Constant.OK:
+                if (response.isSuccess()) {
+                    if (!subscriber.isUnsubscribed()) {
                         subscriber.onNext(response.object);
-                        break;
-                    default:
+                    }
+                } else {
+                    if (!subscriber.isUnsubscribed()) {
                         subscriber.onError(new APIException(response.code, response.message));
-                        break;
+                    }
+                    return;
                 }
-                subscriber.onCompleted();
+
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onCompleted();
+                }
+
             }
         });
     }
+
+
+    /**
+     * 自定义异常，当接口返回的{@link Response#code}不为{@link Constant#OK}时，需要跑出此异常
+     * eg：登陆时验证码错误；参数为传递等
+     */
+    public static class APIException extends Exception {
+        public String code;
+        public String message;
+
+        public APIException(String code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+    }
+
 
     /**
      * http://www.jianshu.com/p/e9e03194199e
@@ -123,20 +134,6 @@ public class RetrofitUtil {
         };
     }
 
-
-    /**
-     * 自定义异常，当接口返回的{@link Response#code}不为{@link Constant#OK}时，需要跑出此异常
-     * eg：登陆时验证码错误；参数为传递等
-     */
-    public static class APIException extends Exception {
-        public String code;
-        public String message;
-
-        public APIException(String code, String message) {
-            this.code = code;
-            this.message = message;
-        }
-    }
 
     /**
      * 当{@link APIService}中接口的注解为{@link retrofit2.http.Multipart}时，参数为{@link RequestBody}

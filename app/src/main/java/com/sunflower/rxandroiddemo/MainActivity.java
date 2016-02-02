@@ -18,7 +18,6 @@ import com.sunflower.rxandroiddemo.dto.RemindDTO;
 import com.sunflower.rxandroiddemo.dto.VersionDto;
 import com.sunflower.rxandroiddemo.utils.CropCircleTransformation;
 
-import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
@@ -55,19 +54,9 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.get_sms_btn)
     void getSms() {
-        ApiWrapper manager = new ApiWrapper();
-        final Subscription subscription = manager.getSmsCode2("15813351726")
-                .retry(2)
-                .retry(new Func2<Integer, Throwable, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer, Throwable throwable) {
-                        Log.i(TAG, "call " + integer);
-                        if (throwable instanceof ConnectException && integer < 3)
-                            return true;
-                        else
-                            return false;
-                    }
-                })
+        ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
+        final Subscription subscription = wrapper.getSmsCode2("15813351726")
                 .subscribe(newSubscriber(new Action1<String>() {
                     @Override
                     public void call(String s) {
@@ -85,6 +74,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.get_article_btn)
     void getArticleList() {
         final ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
         wrapper.getArticleCategory()
                 //可以在doOnNext处理数据
                 .doOnNext(new Action1<List<ArticleCategory>>() {
@@ -118,7 +108,7 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 }));
-        ;
+
     }
 
 
@@ -126,6 +116,7 @@ public class MainActivity extends BaseActivity {
     void getHome() {
         //同时请求多个接口
         ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
         //将多个接口的返回结果结合成一个对象
         Observable.zip(wrapper.checkVersion(), wrapper.getPersonalInfo(), wrapper.getPersonalConfigs(),
                 new Func3<VersionDto, PersonalInfo, PersonalConfigs, HomeRequest>() {
@@ -162,6 +153,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.upload_avatar_btn)
     void updatePersonalInfo() {
         ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
         String path = "/storage/emulated/0/Tencent/QQfile_recv/111355.60083131_1280.jpg";
         wrapper.updatePersonalInfo(path)
                 .subscribe(newSubscriber(new Action1<PersonalInfo>() {
@@ -175,12 +167,24 @@ public class MainActivity extends BaseActivity {
                                 .into(mAvatar);
                     }
                 }));
+//        PersonalInfo info = new PersonalInfo.Builder("139")
+//                .setWeight(100)
+//                .build();
+//        wrapper.updatePersonalInfo(info)
+//                .subscribe(newSubscriber(new Action1<PersonalInfo>() {
+//                    @Override
+//                    public void call(PersonalInfo info) {
+//                        Log.i(TAG, "" + info.weight);
+//                    }
+//                }));
+        ;
 
     }
 
     @OnClick(R.id.comment_product_btn)
     void commentProduct() {
         ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
         long orderId = 511;
         long productId = 9;
         String content = "xixi";
@@ -198,11 +202,12 @@ public class MainActivity extends BaseActivity {
 
     void getNotification() {
         ApiWrapper wrapper = new ApiWrapper();
+        showLoadingDialog();
         Subscription subscription = wrapper.getNotificationList()
                 .doOnNext(new Action1<List<RemindDTO>>() {
                     @Override
                     public void call(List<RemindDTO> remindDTOs) {
-//                        Collections.
+
                     }
                 })
                 .subscribe(newSubscriber(new Action1<List<RemindDTO>>() {
@@ -216,6 +221,7 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.cancel_favorite_btn)
     void cancelFavorite() {
+        showLoadingDialog();
         List<Long> articleId = Arrays.asList(1L, 91L);
         ApiWrapper wrapper = new ApiWrapper();
         wrapper.cancelFavorite(articleId)

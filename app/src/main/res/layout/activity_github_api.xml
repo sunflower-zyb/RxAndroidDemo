@@ -24,4 +24,18 @@
         android:padding="5dip"
         android:text="更新个人资料" />
 
+    <Button
+        android:id="@+id/following_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:text="关注的人" />
+
+    <Button
+        android:id="@+id/repos_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:text="我的repos" />
+
 </LinearLayout>

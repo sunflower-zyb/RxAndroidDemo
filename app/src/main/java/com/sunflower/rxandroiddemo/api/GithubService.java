@@ -1,9 +1,15 @@
 package com.sunflower.rxandroiddemo.api;
 
+import com.sunflower.rxandroiddemo.dto.github.Repos;
 import com.sunflower.rxandroiddemo.dto.github.User;
 
+import java.util.List;
+
+import retrofit2.Callback;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -15,6 +21,10 @@ public interface GithubService {
 
 
     @GET("/users/{user}")
+    void getUserInfo(@Path("user") String user, Callback<User> callback);
+
+
+    @GET("/users/{user}")
     Observable<User> login(@Path("user") String user);
 
 
@@ -22,7 +32,21 @@ public interface GithubService {
     Observable<User> getFeed(@Path("user") String user);
 
 
-    @PATCH("/user")
-    Observable<User> updateLocation(User user);
+    @FormUrlEncoded
+    @POST("/user")
+    Observable<User> updateLocation(@Field("location") String location);
+
+
+    @GET("/users/{user}/following")
+    Observable<List<User>> getFollowing(@Path("user") String user);
+
+
+    @GET("/user/following")
+    Observable<Object> getMyFollowing();
+
+
+    @GET("/user/repos")
+    Observable<List<Repos>> listMyRepositories();
+
 
 }

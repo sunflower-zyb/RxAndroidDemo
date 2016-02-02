@@ -3,10 +3,12 @@ package com.sunflower.rxandroiddemo.api;
 import android.util.Base64;
 import android.util.Log;
 
+import com.sunflower.rxandroiddemo.dto.github.Repos;
 import com.sunflower.rxandroiddemo.dto.github.User;
 import com.sunflower.rxandroiddemo.utils.SecretConstant;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -120,8 +122,8 @@ public class GithubHelper {
                 .login(username)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-
     }
+
 
     //    public Observable<User> getFeed(String user) {
 //        return getService().getFeed(user)
@@ -129,12 +131,33 @@ public class GithubHelper {
 //                .observeOn(AndroidSchedulers.mainThread());
 //    }
 //
-    public Observable<User> updateLocation(User user) {
+    public Observable<User> updateLocation(String location) {
         return getService(GithubService.class, SecretConstant.GITHUB_AUTH_TOKEN)
-                .updateLocation(user)
+                .updateLocation(location)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+
+    public Observable<List<User>> getFollowing(String user) {
+        return getService().getFollowing(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Object> getMyFollowing() {
+        return getService(GithubService.class, SecretConstant.GITHUB_AUTH_TOKEN)
+                .getMyFollowing()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    public Observable<List<Repos>> listMyRepositories() {
+        return getService(GithubService.class, SecretConstant.GITHUB_AUTH_TOKEN)
+                .listMyRepositories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
 }

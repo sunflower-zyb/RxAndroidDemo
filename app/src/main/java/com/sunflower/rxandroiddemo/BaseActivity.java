@@ -53,11 +53,6 @@ public class BaseActivity extends AppCompatActivity {
     protected <T> Subscriber newSubscriber(final Action1<? super T> onNext) {
         return new Subscriber<T>() {
 
-            @Override
-            public void onStart() {
-                super.onStart();
-                showLoadingDialog();
-            }
 
             @Override
             public void onCompleted() {
@@ -71,14 +66,12 @@ public class BaseActivity extends AppCompatActivity {
                     showToast(exception.message);
                 } else if (e instanceof SocketTimeoutException) {
                     showToast(e.getMessage());
-//                    showToast("连接超时");
-//                    Log.e(TAG, "onError " + e.getMessage());
                 } else if (e instanceof ConnectException) {
                     showToast(e.getMessage());
                 } else {
-                    Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    showToast(e.getMessage());
                 }
-                Log.e(TAG, "call " + e.toString());
+                Log.e(TAG, "call " + e.getMessage());
                 hideLoadingDialog();
             }
 
@@ -88,7 +81,6 @@ public class BaseActivity extends AppCompatActivity {
                     onNext.call(t);
                 }
             }
-
 
         };
     }

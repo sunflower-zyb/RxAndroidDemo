@@ -22,6 +22,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -30,9 +31,7 @@ import rx.schedulers.Schedulers;
  */
 public class ApiWrapper extends RetrofitUtil {
 
-    private static final String TAG = "RxJava";
     private final int pageSize = 10;
-
 
     public Observable<String> getSmsCode2(String mobile) {
         return getService().getSmsCode(mobile, "GRAVIDA")
@@ -40,11 +39,31 @@ public class ApiWrapper extends RetrofitUtil {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<Response<String>, Observable<String>>() {
                     @Override
-                    public Observable<String> call(Response response) {
-                        return flatResponse(response);
+                    public Observable<String> call(Response<String> stringResponse) {
+                        return flatResponse(stringResponse);
                     }
                 });
     }
+
+    public Observable<String> getSmsCode(String mobile) {
+        return getService().getSmsCode(mobile, "GRAVIDA")
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<String>, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Response<String> stringResponse) {
+                        return flatResponse(stringResponse);
+                    }
+                });
+    }
+
 
     /**
      * 获取帖子分类
