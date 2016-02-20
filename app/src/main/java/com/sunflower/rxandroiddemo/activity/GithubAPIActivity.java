@@ -1,10 +1,11 @@
-package com.sunflower.rxandroiddemo;
+package com.sunflower.rxandroiddemo.activity;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.sunflower.rxandroiddemo.R;
 import com.sunflower.rxandroiddemo.api.GithubHelper;
 import com.sunflower.rxandroiddemo.dto.github.Repos;
 import com.sunflower.rxandroiddemo.dto.github.User;

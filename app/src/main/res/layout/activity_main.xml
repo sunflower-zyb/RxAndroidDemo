@@ -66,4 +66,15 @@
         android:padding="5dip"
         android:text="取消收藏帖子" />
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingTop="5dip"
+        android:paddingRight="5dip"
+        android:paddingBottom="5dip"
+        android:text="取消收藏帖子" />
+
+
 </LinearLayout>

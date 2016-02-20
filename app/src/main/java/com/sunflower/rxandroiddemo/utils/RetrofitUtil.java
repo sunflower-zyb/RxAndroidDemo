@@ -17,6 +17,7 @@ import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -114,25 +115,77 @@ public class RetrofitUtil {
             this.code = code;
             this.message = message;
         }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
     }
 
 
     /**
      * http://www.jianshu.com/p/e9e03194199e
-     * 木有十分懂，，
+     * <p/>
+     * Transformer实际上就是一个Func1<Observable<T>, Observable<R>>，
+     * 换言之就是：可以通过它将一种类型的Observable转换成另一种类型的Observable，
+     * 和调用一系列的内联操作符是一模一样的。
      *
      * @param <T>
      * @return
      */
-    protected <T> Observable.Transformer<T, T> applySchedulers() {
-        return new Observable.Transformer<T, T>() {
-            @Override
-            public Observable<T> call(Observable<T> observable) {
-                return observable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
-            }
-        };
+//    protected <T> Observable.Transformer<T, T> applySchedulers() {
+////        return new Observable.Transformer<T, T>() {
+////            @Override
+////            public Observable<T> call(Observable<T> observable) {
+////                return observable.subscribeOn(Schedulers.io())
+////                        .observeOn(AndroidSchedulers.mainThread());
+////            }
+////        };
+//
+//        return (Observable.Transformer<T, T>) schedulersTransformer;
+//    }
+//
+//    final Observable.Transformer schedulersTransformer = new Observable.Transformer() {
+//        @Override
+//        public Object call(Object observable) {
+//            return ((Observable) observable).subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    ;
+//        }
+//    };
+
+    protected <T> Observable.Transformer<Response<T>, T> applySchedulers() {
+//        return new Observable.Transformer<Response<T>, T>() {
+//            @Override
+//            public Observable<T> call(Observable<Response<T>> responseObservable) {
+//                return responseObservable.subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .flatMap(new Func1<Response<T>, Observable<T>>() {
+//                            @Override
+//                            public Observable<T> call(Response<T> tResponse) {
+//                                return flatResponse(tResponse);
+//                            }
+//                        })
+//                        ;
+//            }
+//        };
+        return (Observable.Transformer<Response<T>, T>) transformer;
     }
+
+    final Observable.Transformer transformer = new Observable.Transformer() {
+        @Override
+        public Object call(Object observable) {
+            return ((Observable) observable).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(new Func1() {
+                        @Override
+                        public Object call(Object response) {
+                            return flatResponse((Response<Object>)response);
+                        }
+                    })
+                    ;
+        }
+    };
 
 
     /**

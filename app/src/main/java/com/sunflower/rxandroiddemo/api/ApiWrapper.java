@@ -34,16 +34,28 @@ public class ApiWrapper extends RetrofitUtil {
     private final int pageSize = 10;
 
     public Observable<String> getSmsCode2(String mobile) {
+//        return getService().getSmsCode(mobile, "GRAVIDA")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<String>, Observable<String>>() {
+//                    @Override
+//                    public Observable<String> call(Response<String> stringResponse) {
+//                        return flatResponse(stringResponse);
+//                    }
+//                });
+//        return getService().getSmsCode(mobile, "GRAVIDA")
+//                .compose(this.<Response<String>>applySchedulers())
+//                .flatMap(new Func1<Response<String>, Observable<String>>() {
+//                    @Override
+//                    public Observable<String> call(Response<String> stringResponse) {
+//                        return flatResponse(stringResponse);
+//                    }
+//                });
+
         return getService().getSmsCode(mobile, "GRAVIDA")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<String>, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(Response<String> stringResponse) {
-                        return flatResponse(stringResponse);
-                    }
-                });
+                .compose(this.<String>applySchedulers());
     }
+
 
     public Observable<String> getSmsCode(String mobile) {
         return getService().getSmsCode(mobile, "GRAVIDA")
@@ -72,14 +84,17 @@ public class ApiWrapper extends RetrofitUtil {
      */
     public Observable<List<ArticleCategory>> getArticleCategory() {
         return getService().getArticleCategory()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<List<ArticleCategory>>, Observable<List<ArticleCategory>>>() {
-                    @Override
-                    public Observable<List<ArticleCategory>> call(Response<List<ArticleCategory>> listResponse) {
-                        return flatResponse(listResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<List<ArticleCategory>>, Observable<List<ArticleCategory>>>() {
+//                    @Override
+//                    public Observable<List<ArticleCategory>> call(Response<List<ArticleCategory>> listResponse) {
+//                        return flatResponse(listResponse);
+//                    }
+//                })
+
+                .compose(this.<List<ArticleCategory>>applySchedulers())
+                ;
     }
 
 
@@ -92,14 +107,16 @@ public class ApiWrapper extends RetrofitUtil {
      */
     public Observable<List<ArticleListDTO>> getArticleList(long id, int pageNumber) {
         return getService().getArticleList(id, pageNumber, pageSize)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<List<ArticleListDTO>>, Observable<List<ArticleListDTO>>>() {
-                    @Override
-                    public Observable<List<ArticleListDTO>> call(Response<List<ArticleListDTO>> articleListDTOs) {
-                        return flatResponse(articleListDTOs);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<List<ArticleListDTO>>, Observable<List<ArticleListDTO>>>() {
+//                    @Override
+//                    public Observable<List<ArticleListDTO>> call(Response<List<ArticleListDTO>> articleListDTOs) {
+//                        return flatResponse(articleListDTOs);
+//                    }
+//                })
+                .compose(this.<List<ArticleListDTO>>applySchedulers())
+                ;
     }
 
     /**
