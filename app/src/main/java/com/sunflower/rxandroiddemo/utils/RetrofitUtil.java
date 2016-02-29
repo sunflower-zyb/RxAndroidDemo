@@ -28,7 +28,7 @@ public class RetrofitUtil {
     /**
      * 服务器地址
      */
-    private static final String API_HOST = "http://203.195.168.151:8888/sunray/";
+    private static final String API_HOST = SecretConstant.API_HOST;
 
     private static APIService service;
     private static Retrofit retrofit;
@@ -153,6 +153,7 @@ public class RetrofitUtil {
 //                    ;
 //        }
 //    };
+
     protected <T> Observable.Transformer<Response<T>, T> applySchedulers() {
 //        return new Observable.Transformer<Response<T>, T>() {
 //            @Override
@@ -179,7 +180,7 @@ public class RetrofitUtil {
                     .flatMap(new Func1() {
                         @Override
                         public Object call(Object response) {
-                            return flatResponse((Response<Object>) response);
+                            return flatResponse((Response<Object>)response);
                         }
                     })
                     ;
