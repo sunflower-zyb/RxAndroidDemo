@@ -125,12 +125,6 @@ public class GithubHelper {
     }
 
 
-    //    public Observable<User> getFeed(String user) {
-//        return getService().getFeed(user)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
-//
     public Observable<User> updateLocation(String location) {
         return getService(GithubService.class, SecretConstant.GITHUB_AUTH_TOKEN)
                 .updateLocation(location)

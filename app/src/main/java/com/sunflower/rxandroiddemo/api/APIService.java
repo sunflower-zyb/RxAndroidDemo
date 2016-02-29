@@ -29,28 +29,10 @@ import rx.Observable;
 public interface APIService {
 
     /**
-     * @param id
+     * 获取帖子分类列表
+     *
      * @return
      */
-    @FormUrlEncoded
-    @POST("api/gravida/personal/area.json")
-    Observable<Response> loadDefaultAreaAndHospital(@Field("id") String id);
-
-
-    @FormUrlEncoded
-    @POST("api/gravida/product/findByArea.json")
-    Observable<Response> loadProductByArea(@Field("id") String id);
-
-    @FormUrlEncoded
-    @POST("api/common/msg.json")
-    Observable<Response> getSms(@Field("mobile") String mobile, @Field("appType") String appType);
-
-    @FormUrlEncoded
-    @POST("api/common/msg.json")
-    Observable<Response<String>> getSmsCode(@Field("mobile") String mobile, @Field("appType") String appType);
-
-
-    @Headers("Cache-Control: public, max-age=604800 ,max-stale=2419200")
     @POST("api/gravida/article/categories.json")
     Observable<Response<List<ArticleCategory>>> getArticleCategory();
 
@@ -62,7 +44,6 @@ public interface APIService {
      * @param pageSize
      * @return
      */
-    @Headers("Cache-Control: public, max-age=604800 ,max-stale=2419200")
     @FormUrlEncoded
     @POST("api/gravida/article/list.json")
     Observable<Response<List<ArticleListDTO>>> getArticleList(@Field("id") long id,
@@ -93,6 +74,12 @@ public interface APIService {
     @POST("api/gravida/personal/info.json")
     Observable<Response<PersonalInfo>> getPersonalInfo(@Field("id") String id);
 
+    /**
+     * 获取个人配置信息
+     *
+     * @param id
+     * @return
+     */
     @FormUrlEncoded
     @POST("api/gravida/personal/configs.json")
     Observable<Response<PersonalConfigs>> getPersonalConfigs(@Field("id") String id);

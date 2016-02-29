@@ -115,4 +115,17 @@ public class RemindDTO implements Comparable<RemindDTO> {
             return this.label();
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "RemindDTO{" +
+                "id=" + id +
+                ", remindTime='" + remindTime + '\'' +
+                ", content='" + content + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                ", templateId=" + templateId +
+                '}';
+    }
 }

@@ -54,21 +54,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.get_sms_btn)
-    void getSms() {
-        ApiWrapper wrapper = new ApiWrapper();
-        showLoadingDialog();
-        Subscription subscription = wrapper.getSmsCode2("15813351726")
-                .subscribe(newSubscriber(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        Log.i(TAG, "call " + s);
-                    }
-                }));
-        mCompositeSubscription.add(subscription);
-    }
-
-
     /**
      * 分类id
      */
@@ -78,7 +63,7 @@ public class MainActivity extends BaseActivity {
     void getArticleList() {
         final ApiWrapper wrapper = new ApiWrapper();
         showLoadingDialog();
-        wrapper.getArticleCategory()
+        Subscription subscription = wrapper.getArticleCategory()
                 //可以在doOnNext处理数据
                 .doOnNext(new Action1<List<ArticleCategory>>() {
                     @Override
@@ -111,6 +96,7 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 }));
+        mCompositeSubscription.add(subscription);
 
     }
 
@@ -121,7 +107,7 @@ public class MainActivity extends BaseActivity {
         ApiWrapper wrapper = new ApiWrapper();
         showLoadingDialog();
         //将多个接口的返回结果结合成一个对象
-        Observable.zip(wrapper.checkVersion(), wrapper.getPersonalInfo(), wrapper.getPersonalConfigs(),
+        Subscription subscription = Observable.zip(wrapper.checkVersion(), wrapper.getPersonalInfo(), wrapper.getPersonalConfigs(),
                 new Func3<VersionDto, PersonalInfo, PersonalConfigs, HomeRequest>() {
                     @Override
                     public HomeRequest call(VersionDto versionDto, PersonalInfo personalInfo, PersonalConfigs personalConfigs) {
@@ -139,17 +125,8 @@ public class MainActivity extends BaseActivity {
                         Log.i(TAG, "personalInfo--" + request.getPersonalInfo().toString());
                         Log.i(TAG, "PersonalConfigs--" + request.getPersonalConfigs().toString());
                     }
-                }))
-        ;
-//        Subscription s1 = wrapper
-//                .checkVersion()
-//                .subscribe(newSubscriber(new Action1<VersionDto>() {
-//                    @Override
-//                    public void call(VersionDto dto) {
-//                        Log.i(TAG, "checkVersion--" + dto.toString());
-//                    }
-//                }));
-//        mCompositeSubscription.add(s1);
+                }));
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -158,7 +135,7 @@ public class MainActivity extends BaseActivity {
         ApiWrapper wrapper = new ApiWrapper();
         showLoadingDialog();
         String path = "/storage/emulated/0/Tencent/QQfile_recv/111355.60083131_1280.jpg";
-        wrapper.updatePersonalInfo(path)
+        Subscription subscription = wrapper.updatePersonalInfo(path)
                 .subscribe(newSubscriber(new Action1<PersonalInfo>() {
                     @Override
                     public void call(PersonalInfo personalInfo) {
@@ -170,18 +147,7 @@ public class MainActivity extends BaseActivity {
                                 .into(mAvatar);
                     }
                 }));
-//        PersonalInfo info = new PersonalInfo.Builder("139")
-//                .setWeight(100)
-//                .build();
-//        wrapper.updatePersonalInfo(info)
-//                .subscribe(newSubscriber(new Action1<PersonalInfo>() {
-//                    @Override
-//                    public void call(PersonalInfo info) {
-//                        Log.i(TAG, "" + info.weight);
-//                    }
-//                }));
-        ;
-
+        mCompositeSubscription.add(subscription);
     }
 
     @OnClick(R.id.comment_product_btn)
@@ -193,16 +159,18 @@ public class MainActivity extends BaseActivity {
         String content = "xixi";
         List<String> paths = Arrays.asList("/storage/emulated/0/UCDownloads/640.jpg",
                 "/storage/emulated/0/Pictures/Screenshots/Screenshot_2016-01-11-16-34-44.jpeg");
-        wrapper.commentProduct(orderId, productId, content, paths)
+        Subscription subscription = wrapper.commentProduct(orderId, productId, content, paths)
                 .subscribe(newSubscriber(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
 //                        Log.i(TAG, "")
                     }
                 }));
+        mCompositeSubscription.add(subscription);
     }
 
 
+    @OnClick(R.id.notification_btn)
     void getNotification() {
         ApiWrapper wrapper = new ApiWrapper();
         showLoadingDialog();
@@ -216,7 +184,7 @@ public class MainActivity extends BaseActivity {
                 .subscribe(newSubscriber(new Action1<List<RemindDTO>>() {
                     @Override
                     public void call(List<RemindDTO> remindDTOs) {
-
+                        Log.i(TAG, "getNotification---" + remindDTOs.toString());
                     }
                 }));
         mCompositeSubscription.add(subscription);
@@ -227,13 +195,14 @@ public class MainActivity extends BaseActivity {
         showLoadingDialog();
         List<Long> articleId = Arrays.asList(1L, 91L);
         ApiWrapper wrapper = new ApiWrapper();
-        wrapper.cancelFavorite(articleId)
+        Subscription subscription = wrapper.cancelFavorite(articleId)
                 .subscribe(newSubscriber(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         Log.i(TAG, "cancelFavorite-- " + "Success");
                     }
                 }));
+        mCompositeSubscription.add(subscription);
     }
 
     @Override

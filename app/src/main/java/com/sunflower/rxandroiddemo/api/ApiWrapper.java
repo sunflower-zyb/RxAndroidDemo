@@ -33,49 +33,6 @@ public class ApiWrapper extends RetrofitUtil {
 
     private final int pageSize = 10;
 
-    public Observable<String> getSmsCode2(String mobile) {
-//        return getService().getSmsCode(mobile, "GRAVIDA")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .flatMap(new Func1<Response<String>, Observable<String>>() {
-//                    @Override
-//                    public Observable<String> call(Response<String> stringResponse) {
-//                        return flatResponse(stringResponse);
-//                    }
-//                });
-//        return getService().getSmsCode(mobile, "GRAVIDA")
-//                .compose(this.<Response<String>>applySchedulers())
-//                .flatMap(new Func1<Response<String>, Observable<String>>() {
-//                    @Override
-//                    public Observable<String> call(Response<String> stringResponse) {
-//                        return flatResponse(stringResponse);
-//                    }
-//                });
-
-        return getService().getSmsCode(mobile, "GRAVIDA")
-                .compose(this.<String>applySchedulers());
-    }
-
-
-    public Observable<String> getSmsCode(String mobile) {
-        return getService().getSmsCode(mobile, "GRAVIDA")
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<String>, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(Response<String> stringResponse) {
-                        return flatResponse(stringResponse);
-                    }
-                });
-    }
-
 
     /**
      * 获取帖子分类
@@ -126,38 +83,44 @@ public class ApiWrapper extends RetrofitUtil {
      */
     public Observable<VersionDto> checkVersion() {
         return getService().checkVersion(BuildConfig.VERSION_NAME, "GRAVIDA", "ANDROID")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<VersionDto>, Observable<VersionDto>>() {
-                    @Override
-                    public Observable<VersionDto> call(Response<VersionDto> versionDtoResponse) {
-                        return flatResponse(versionDtoResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<VersionDto>, Observable<VersionDto>>() {
+//                    @Override
+//                    public Observable<VersionDto> call(Response<VersionDto> versionDtoResponse) {
+//                        return flatResponse(versionDtoResponse);
+//                    }
+//                })
+                .compose(this.<VersionDto>applySchedulers())
+                ;
     }
 
     public Observable<PersonalInfo> getPersonalInfo() {
         return getService().getPersonalInfo("139")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
-                    @Override
-                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
-                        return flatResponse(personalInfoResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
+//                    @Override
+//                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
+//                        return flatResponse(personalInfoResponse);
+//                    }
+//                })
+                .compose(this.<PersonalInfo>applySchedulers())
+                ;
     }
 
     public Observable<PersonalConfigs> getPersonalConfigs() {
         return getService().getPersonalConfigs("139")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<PersonalConfigs>, Observable<PersonalConfigs>>() {
-                    @Override
-                    public Observable<PersonalConfigs> call(Response<PersonalConfigs> personalConfigsResponse) {
-                        return flatResponse(personalConfigsResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<PersonalConfigs>, Observable<PersonalConfigs>>() {
+//                    @Override
+//                    public Observable<PersonalConfigs> call(Response<PersonalConfigs> personalConfigsResponse) {
+//                        return flatResponse(personalConfigsResponse);
+//                    }
+//                })
+                .compose(this.<PersonalConfigs>applySchedulers())
+                ;
     }
 
 
@@ -170,21 +133,25 @@ public class ApiWrapper extends RetrofitUtil {
     public Observable<PersonalInfo> updatePersonalInfo(String path) {
         File file = new File(path);
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), "139");
+        //直接传递文件
 //        RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), file);
+        //传递byte[]
         Bitmap bitmap = ClippingPicture.decodeBitmapSd(path);
         RequestBody avatar = RequestBody.create(MediaType.parse("image/*"), ClippingPicture.bitmapToBytes(bitmap));
         Map<String, RequestBody> params = new HashMap<>();
         params.put("id", id);
         params.put("avatar\"; filename=\"" + file.getName() + "", avatar);
         return getService().updatePersonalInfo(params)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
-                    @Override
-                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
-                        return flatResponse(personalInfoResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<PersonalInfo>, Observable<PersonalInfo>>() {
+//                    @Override
+//                    public Observable<PersonalInfo> call(Response<PersonalInfo> personalInfoResponse) {
+//                        return flatResponse(personalInfoResponse);
+//                    }
+//                })
+                .compose(this.<PersonalInfo>applySchedulers())
+                ;
 
     }
 
@@ -233,14 +200,15 @@ public class ApiWrapper extends RetrofitUtil {
             params.put("images\"; filename=\"" + file.getName() + "", images);
         }
         return getService().commentProduct(params)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<Object>, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Response<Object> objectResponse) {
-                        return flatResponse(objectResponse);
-                    }
-                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<Object>, Observable<?>>() {
+//                    @Override
+//                    public Observable<?> call(Response<Object> objectResponse) {
+//                        return flatResponse(objectResponse);
+//                    }
+//                })
+                .compose(this.<Object>applySchedulers())
                 ;
 
     }
@@ -255,14 +223,16 @@ public class ApiWrapper extends RetrofitUtil {
 
     public Observable<List<RemindDTO>> getNotificationList() {
         return getService().getNotificationList("139")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<List<RemindDTO>>, Observable<List<RemindDTO>>>() {
-                    @Override
-                    public Observable<List<RemindDTO>> call(Response<List<RemindDTO>> listResponse) {
-                        return flatResponse(listResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<List<RemindDTO>>, Observable<List<RemindDTO>>>() {
+//                    @Override
+//                    public Observable<List<RemindDTO>> call(Response<List<RemindDTO>> listResponse) {
+//                        return flatResponse(listResponse);
+//                    }
+//                })
+                .compose(this.<List<RemindDTO>>applySchedulers())
+                ;
     }
 
 
@@ -274,14 +244,16 @@ public class ApiWrapper extends RetrofitUtil {
      */
     public Observable<Object> cancelFavorite(List<Long> articleId) {
         return getService().cancelFavorite("139", articleId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Response<Object>, Observable<Object>>() {
-                    @Override
-                    public Observable<Object> call(Response<Object> objectResponse) {
-                        return flatResponse(objectResponse);
-                    }
-                });
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .flatMap(new Func1<Response<Object>, Observable<Object>>() {
+//                    @Override
+//                    public Observable<Object> call(Response<Object> objectResponse) {
+//                        return flatResponse(objectResponse);
+//                    }
+//                })
+                .compose(this.<Object>applySchedulers())
+                ;
 
     }
 

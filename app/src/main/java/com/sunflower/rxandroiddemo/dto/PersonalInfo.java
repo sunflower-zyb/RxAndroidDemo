@@ -80,6 +80,24 @@ public class PersonalInfo {
         this.areaId = areaId;
     }
 
+    @Override
+    public String toString() {
+        return "PersonalInfo{" +
+                "id='" + id + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", address='" + address + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", IDNO='" + IDNO + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", expected='" + expected + '\'' +
+                ", stature=" + stature +
+                ", weight=" + weight +
+                ", kinship='" + kinship + '\'' +
+                ", age=" + age +
+                ", areaId=" + areaId +
+                '}';
+    }
+
     public static class Builder {
 
         /**

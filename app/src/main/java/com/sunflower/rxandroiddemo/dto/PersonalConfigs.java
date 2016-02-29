@@ -102,4 +102,21 @@ public class PersonalConfigs {
     public String getOrderSn() {
         return orderSn;
     }
+
+    @Override
+    public String toString() {
+        return "PersonalConfigs{" +
+                "receive=" + receive +
+                ", voice=" + voice +
+                ", idcard=" + idcard +
+                ", purchased=" + purchased +
+                ", supplement=" + supplement +
+                ", diagnosing=" + diagnosing +
+                ", doctor_comment_content='" + doctor_comment_content + '\'' +
+                ", bluetooth='" + bluetooth + '\'' +
+                ", hasDevice=" + hasDevice +
+                ", orderStatus=" + orderStatus +
+                ", orderSn='" + orderSn + '\'' +
+                '}';
+    }
 }
