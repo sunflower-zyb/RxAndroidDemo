@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Send mail
         uses: dawidd6/action-send-mail@master
