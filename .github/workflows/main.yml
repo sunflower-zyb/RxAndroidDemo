@@ -1,4 +1,4 @@
-name: CI
+name: First Action
 
 on: 
     push:
@@ -21,7 +21,7 @@ jobs:
            password: ${{secrets.MAIL_PASSWORD}}
            subject: Github Actions job result
            # Read file contents as body:
-           body: file://README.md
+           body: This is body.
            to: 645148061@qq.com
            from: GitHub Actions
            # Optional content type:
