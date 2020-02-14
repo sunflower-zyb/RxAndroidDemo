@@ -8,19 +8,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send mail
-        uses: dawidd6/action-send-mail@master
-        with:
-           server_address: smtp.qq.com
-           server_port: 465
-           username: ${{secrets.MAIL_USERNAME}}
-           password: ${{secrets.MAIL_PASSWORD}}
-           subject: Github Actions job result
-           # Read file contents as body:
-           body: This is body.
-           to: 645148061@qq.com
-           from: GitHub Actions
-           # Optional content type:
-           content_type: text/html
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Send mail
+#         uses: dawidd6/action-send-mail@master
+#         with:
+#            server_address: smtp.qq.com
+#            server_port: 465
+#            username: ${{secrets.MAIL_USERNAME}}
+#            password: ${{secrets.MAIL_PASSWORD}}
+#            subject: Github Actions job result
+#            # Read file contents as body:
+#            body: This is body.
+#            to: 645148061@qq.com
+#            from: GitHub Actions
+#            # Optional content type:
+#            content_type: text/html
